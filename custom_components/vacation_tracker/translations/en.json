@@ -1,0 +1,44 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Ferieoversigt",
+        "description": "Forbind til din Ferieoversigt-tracker.",
+        "data": {
+          "base_url": "Grundadresse (f.eks. http://10.0.1.18:5678)",
+          "api_key": "API-nøgle"
+        }
+      },
+      "reauth_confirm": {
+        "title": "API-nøgle er ikke længere gyldig",
+        "description": "Nøglen blev sandsynligvis fornyet på selve siden. Indsæt den nye nøgle fra Indstillinger på siden.",
+        "data": {
+          "base_url": "Grundadresse",
+          "api_key": "Ny API-nøgle"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke forbinde - tjek adressen og API-nøglen.",
+      "invalid_auth": "API-nøglen blev afvist - tjek at du har indsat den korrekt."
+    },
+    "abort": {
+      "already_configured": "Ferieoversigt er allerede konfigureret.",
+      "reauth_successful": "Ny API-nøgle godkendt og gemt."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opdater forbindelse",
+        "data": {
+          "base_url": "Grundadresse",
+          "api_key": "API-nøgle"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke forbinde - tjek adressen og API-nøglen."
+    }
+  }
+}

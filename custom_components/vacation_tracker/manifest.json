@@ -1,0 +1,10 @@
+{
+  "domain": "vacation_tracker",
+  "name": "Vacation Tracker (Ferieoversigt)",
+  "version": "1.0.0",
+  "config_flow": true,
+  "documentation": "https://vacation.holmehave21.dk",
+  "requirements": [],
+  "codeowners": [],
+  "iot_class": "local_polling"
+}
