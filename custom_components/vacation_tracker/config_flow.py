@@ -10,9 +10,22 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import CONF_API_KEY, CONF_BASE_URL, DOMAIN, TODAY_PATH
+from .const import (
+    CONF_API_KEY,
+    CONF_BASE_URL,
+    CONF_SCAN_INTERVAL_MINUTES,
+    DEFAULT_SCAN_INTERVAL_MINUTES,
+    DOMAIN,
+    MAX_SCAN_INTERVAL_MINUTES,
+    MIN_SCAN_INTERVAL_MINUTES,
+    TODAY_PATH,
+)
 
 _LOGGER = logging.getLogger(__name__)
+
+_SCAN_INTERVAL_VALIDATOR = vol.All(
+    vol.Coerce(int), vol.Range(min=MIN_SCAN_INTERVAL_MINUTES, max=MAX_SCAN_INTERVAL_MINUTES)
+)
 
 
 async def _test_connection(hass, base_url: str, api_key: str) -> bool:
@@ -47,6 +60,9 @@ class VacationTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             {
                 vol.Required(CONF_BASE_URL, default="http://10.0.1.18:5678"): str,
                 vol.Required(CONF_API_KEY): str,
+                vol.Required(
+                    CONF_SCAN_INTERVAL_MINUTES, default=DEFAULT_SCAN_INTERVAL_MINUTES
+                ): _SCAN_INTERVAL_VALIDATOR,
             }
         )
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
@@ -89,9 +105,9 @@ class VacationTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class VacationTrackerOptionsFlow(config_entries.OptionsFlow):
-    """Lets base_url and api_key be updated from the HA UI at any time -
-    e.g. after generating a new key on the site's Indstillinger tab -
-    without editing YAML or restarting Home Assistant."""
+    """Lets base_url, api_key and the refresh interval be updated from the HA
+    UI at any time - e.g. after generating a new key on the site's
+    Indstillinger tab - without editing YAML or restarting Home Assistant."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         self.config_entry = config_entry
@@ -113,6 +129,10 @@ class VacationTrackerOptionsFlow(config_entries.OptionsFlow):
             {
                 vol.Required(CONF_BASE_URL, default=current.get(CONF_BASE_URL, "")): str,
                 vol.Required(CONF_API_KEY, default=current.get(CONF_API_KEY, "")): str,
+                vol.Required(
+                    CONF_SCAN_INTERVAL_MINUTES,
+                    default=current.get(CONF_SCAN_INTERVAL_MINUTES, DEFAULT_SCAN_INTERVAL_MINUTES),
+                ): _SCAN_INTERVAL_VALIDATOR,
             }
         )
         return self.async_show_form(step_id="init", data_schema=schema, errors=errors)

@@ -5,7 +5,12 @@ from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.vacation_tracker.const import CONF_API_KEY, CONF_BASE_URL, DOMAIN
+from custom_components.vacation_tracker.const import (
+    CONF_API_KEY,
+    CONF_BASE_URL,
+    CONF_SCAN_INTERVAL_MINUTES,
+    DOMAIN,
+)
 
 BASE_URL = "http://10.0.1.18:5678"
 TODAY_URL = f"{BASE_URL}/webhook/vacation/today"
@@ -22,10 +27,14 @@ async def test_user_flow_success(hass, aioclient_mock):
 
     result2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {CONF_BASE_URL: BASE_URL, CONF_API_KEY: "good-key"},
+        {CONF_BASE_URL: BASE_URL, CONF_API_KEY: "good-key", CONF_SCAN_INTERVAL_MINUTES: 15},
     )
     assert result2["type"] == FlowResultType.CREATE_ENTRY
-    assert result2["data"] == {CONF_BASE_URL: BASE_URL, CONF_API_KEY: "good-key"}
+    assert result2["data"] == {
+        CONF_BASE_URL: BASE_URL,
+        CONF_API_KEY: "good-key",
+        CONF_SCAN_INTERVAL_MINUTES: 15,
+    }
 
 
 async def test_user_flow_cannot_connect(hass, aioclient_mock):
@@ -36,7 +45,7 @@ async def test_user_flow_cannot_connect(hass, aioclient_mock):
     )
     result2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {CONF_BASE_URL: BASE_URL, CONF_API_KEY: "bad-key"},
+        {CONF_BASE_URL: BASE_URL, CONF_API_KEY: "bad-key", CONF_SCAN_INTERVAL_MINUTES: 30},
     )
     assert result2["type"] == FlowResultType.FORM
     assert result2["errors"] == {"base": "cannot_connect"}
@@ -48,7 +57,7 @@ async def test_user_flow_already_configured_aborts(hass, aioclient_mock):
     existing = MockConfigEntry(
         domain=DOMAIN,
         unique_id=DOMAIN,
-        data={CONF_BASE_URL: BASE_URL, CONF_API_KEY: "existing-key"},
+        data={CONF_BASE_URL: BASE_URL, CONF_API_KEY: "existing-key", CONF_SCAN_INTERVAL_MINUTES: 30},
     )
     existing.add_to_hass(hass)
 
@@ -57,7 +66,7 @@ async def test_user_flow_already_configured_aborts(hass, aioclient_mock):
     )
     result2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {CONF_BASE_URL: BASE_URL, CONF_API_KEY: "another-key"},
+        {CONF_BASE_URL: BASE_URL, CONF_API_KEY: "another-key", CONF_SCAN_INTERVAL_MINUTES: 30},
     )
     assert result2["type"] == FlowResultType.ABORT
     assert result2["reason"] == "already_configured"

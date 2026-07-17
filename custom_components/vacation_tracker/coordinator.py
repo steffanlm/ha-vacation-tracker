@@ -34,20 +34,27 @@ class VacationTrackerCoordinator(DataUpdateCoordinator):
     the combined result with every sensor, so each entity doesn't need its
     own separate HTTP call."""
 
-    def __init__(self, hass: HomeAssistant, base_url: str, api_key: str) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        base_url: str,
+        api_key: str,
+        scan_interval_minutes: int = DEFAULT_SCAN_INTERVAL_MINUTES,
+    ) -> None:
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(minutes=DEFAULT_SCAN_INTERVAL_MINUTES),
+            update_interval=timedelta(minutes=scan_interval_minutes),
         )
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self._auth_failed_notified = False
 
-    def update_connection(self, base_url: str, api_key: str) -> None:
+    def update_connection(self, base_url: str, api_key: str, scan_interval_minutes: int) -> None:
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
+        self.update_interval = timedelta(minutes=scan_interval_minutes)
 
     def _notify_auth_failed(self) -> None:
         # Guarded so this fires once per outage, not on every failed poll

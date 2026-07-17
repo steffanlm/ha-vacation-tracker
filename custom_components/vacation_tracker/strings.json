@@ -6,7 +6,8 @@
         "description": "Forbind til din Ferieoversigt-tracker.",
         "data": {
           "base_url": "Grundadresse (f.eks. http://10.0.1.18:5678)",
-          "api_key": "API-nøgle"
+          "api_key": "API-nøgle",
+          "scan_interval_minutes": "Opdateringsinterval (minutter)"
         }
       },
       "reauth_confirm": {
@@ -33,7 +34,8 @@
         "title": "Opdater forbindelse",
         "data": {
           "base_url": "Grundadresse",
-          "api_key": "API-nøgle"
+          "api_key": "API-nøgle",
+          "scan_interval_minutes": "Opdateringsinterval (minutter)"
         }
       }
     },
