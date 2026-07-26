@@ -1,7 +1,8 @@
 # Vacation Tracker (Ferieoversigt) for Home Assistant
 
-A custom Home Assistant integration for a personal [Ferieoversigt](https://vacation.holmehave21.dk)
-vacation-tracker site. Polls the site's API once per cycle and exposes who's
+A custom Home Assistant integration for a personal Ferieoversigt
+vacation-tracker site (now a tab on the home dashboard rather than its own
+domain). Polls the site's API once per cycle and exposes who's
 off today, what type of leave it is, whether today is a Danish public/school
 holiday, and how many periods are upcoming.
 

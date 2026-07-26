@@ -68,7 +68,7 @@ class VacationTrackerCoordinator(DataUpdateCoordinator):
             message=(
                 "API-nøglen blev afvist af serveren - den er sandsynligvis blevet "
                 "fornyet på selve siden. Generér en ny nøgle under Indstillinger på "
-                "vacation.holmehave21.dk, og indtast den derefter her: "
+                "h.holmehave21.dk (fanen \"Vacation\"), og indtast den derefter her: "
                 "Indstillinger → Enheder og tjenester → Ferieoversigt → "
                 "\"Genautentificer\"."
             ),
