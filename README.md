@@ -4,7 +4,9 @@ A custom Home Assistant integration for a personal Ferieoversigt
 vacation-tracker site (now a tab on the home dashboard rather than its own
 domain). Polls the site's API once per cycle and exposes who's
 off today, what type of leave it is, whether today is a Danish public/school
-holiday, and how many periods are upcoming.
+holiday, how many periods are upcoming, and tomorrow's work-location day
+(synced from Google Calendar) for EV-charging automations that need to know
+the night before.
 
 ## Entities
 
@@ -15,10 +17,12 @@ holiday, and how many periods are upcoming.
 | `sensor.vacation_day_off_who` | sensor | Comma-separated names of who's off today, or "Ingen". |
 | `sensor.vacation_day_off_type` | sensor | Comma-separated vacation type(s) today (e.g. "Sommerferie"), or "Ingen". |
 | `sensor.vacation_upcoming` | sensor | Count of upcoming periods. Attribute `entries` has the full list (name, dates, type, color) for a table card. |
+| `sensor.vacation_work_location_tomorrow` | sensor | Tomorrow's synced work-location name (e.g. "Erritsø"), or "Ingen". Attribute `color` has its calendar color. |
 
-All four are grouped under one "Ferieoversigt" device and share a single
-polling cycle (default every 30 minutes) against three endpoints:
-`/webhook/vacation/today`, `/webhook/vacation/holidays`, `/webhook/vacation/list`.
+All five are grouped under one "Ferieoversigt" device and share a single
+polling cycle (default every 30 minutes) against four endpoints:
+`/webhook/vacation/today`, `/webhook/vacation/holidays`, `/webhook/vacation/list`,
+`/webhook/vacation/worklocation/tomorrow`.
 
 ## Installation
 

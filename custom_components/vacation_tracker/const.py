@@ -11,3 +11,4 @@ MAX_SCAN_INTERVAL_MINUTES = 1440
 TODAY_PATH = "/webhook/vacation/today"
 HOLIDAYS_PATH = "/webhook/vacation/holidays"
 LIST_PATH = "/webhook/vacation/list"
+WORK_LOCATION_TOMORROW_PATH = "/webhook/vacation/worklocation/tomorrow"

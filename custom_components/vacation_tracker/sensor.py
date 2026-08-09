@@ -19,6 +19,7 @@ async def async_setup_entry(
             VacationDayOffWhoSensor(coordinator, entry),
             VacationDayOffTypeSensor(coordinator, entry),
             VacationUpcomingSensor(coordinator, entry),
+            VacationWorkLocationTomorrowSensor(coordinator, entry),
         ]
     )
 
@@ -79,3 +80,21 @@ class VacationUpcomingSensor(VacationTrackerEntity, SensorEntity):
         # Full upcoming list (name, start/end date, type, color) - use in a
         # markdown or auto-entities card for a proper table view.
         return {"entries": self.coordinator.data["upcoming"]}
+
+
+class VacationWorkLocationTomorrowSensor(VacationTrackerEntity, SensorEntity):
+    _attr_name = "Vacation Work Location Tomorrow"
+    _attr_icon = "mdi:map-marker-radius"
+
+    def __init__(self, coordinator: VacationTrackerCoordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator, entry)
+        self._attr_unique_id = f"{entry.entry_id}_work_location_tomorrow"
+        self.entity_id = "sensor.vacation_work_location_tomorrow"
+
+    @property
+    def native_value(self) -> str:
+        return self.coordinator.data["work_location_tomorrow"] or "Ingen"
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        return {"color": self.coordinator.data["work_location_tomorrow_color"]}

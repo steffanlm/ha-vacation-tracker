@@ -16,6 +16,7 @@ from .const import (
     HOLIDAYS_PATH,
     LIST_PATH,
     TODAY_PATH,
+    WORK_LOCATION_TOMORROW_PATH,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -111,6 +112,7 @@ class VacationTrackerCoordinator(DataUpdateCoordinator):
         today_data = await self._fetch(TODAY_PATH)
         holidays_data = await self._fetch(HOLIDAYS_PATH)
         upcoming_data = await self._fetch(LIST_PATH)
+        work_location_data = await self._fetch(WORK_LOCATION_TOMORROW_PATH)
 
         # Reaching this point means every fetch succeeded, so clear any
         # earlier "key is invalid" notification if one is still showing.
@@ -125,4 +127,6 @@ class VacationTrackerCoordinator(DataUpdateCoordinator):
             "is_holiday": len(holiday_names_today) > 0,
             "holiday_names": holiday_names_today,
             "upcoming": upcoming_data,
+            "work_location_tomorrow": work_location_data.get("location"),
+            "work_location_tomorrow_color": work_location_data.get("color"),
         }

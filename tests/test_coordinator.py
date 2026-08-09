@@ -16,6 +16,7 @@ API_KEY = "test-key"
 TODAY_URL = f"{BASE_URL}/webhook/vacation/today"
 HOLIDAYS_URL = f"{BASE_URL}/webhook/vacation/holidays"
 LIST_URL = f"{BASE_URL}/webhook/vacation/list"
+WORK_LOCATION_URL = f"{BASE_URL}/webhook/vacation/worklocation/tomorrow"
 
 
 async def test_update_data_success(hass, aioclient_mock):
@@ -31,6 +32,7 @@ async def test_update_data_success(hass, aioclient_mock):
         json=[{"date": f"{date.today().isoformat()}T00:00:00.000Z", "name": "Testdag"}],
     )
     aioclient_mock.get(LIST_URL, json=[])
+    aioclient_mock.get(WORK_LOCATION_URL, json={"location": "Erritsø", "color": "#4b2e83"})
 
     coordinator = VacationTrackerCoordinator(hass, BASE_URL, API_KEY)
     data = await coordinator._async_update_data()
@@ -40,18 +42,34 @@ async def test_update_data_success(hass, aioclient_mock):
     assert data["is_holiday"] is True
     assert data["holiday_names"] == ["Testdag"]
     assert data["upcoming"] == []
+    assert data["work_location_tomorrow"] == "Erritsø"
+    assert data["work_location_tomorrow_color"] == "#4b2e83"
 
 
 async def test_update_data_ignores_holidays_on_other_days(hass, aioclient_mock):
     aioclient_mock.get(TODAY_URL, json={"day_off": False, "entries": []})
     aioclient_mock.get(HOLIDAYS_URL, json=[{"date": "2099-01-01T00:00:00.000Z", "name": "Fremtidsdag"}])
     aioclient_mock.get(LIST_URL, json=[])
+    aioclient_mock.get(WORK_LOCATION_URL, json={"location": None, "color": None})
 
     coordinator = VacationTrackerCoordinator(hass, BASE_URL, API_KEY)
     data = await coordinator._async_update_data()
 
     assert data["is_holiday"] is False
     assert data["holiday_names"] == []
+
+
+async def test_update_data_no_work_location_tomorrow(hass, aioclient_mock):
+    aioclient_mock.get(TODAY_URL, json={"day_off": False, "entries": []})
+    aioclient_mock.get(HOLIDAYS_URL, json=[])
+    aioclient_mock.get(LIST_URL, json=[])
+    aioclient_mock.get(WORK_LOCATION_URL, json={"location": None, "color": None})
+
+    coordinator = VacationTrackerCoordinator(hass, BASE_URL, API_KEY)
+    data = await coordinator._async_update_data()
+
+    assert data["work_location_tomorrow"] is None
+    assert data["work_location_tomorrow_color"] is None
 
 
 async def test_unauthorized_raises_config_entry_auth_failed(hass, aioclient_mock):
@@ -91,6 +109,7 @@ async def test_notification_clears_on_recovery(hass, aioclient_mock):
     aioclient_mock.get(TODAY_URL, json={"day_off": False, "entries": []})
     aioclient_mock.get(HOLIDAYS_URL, json=[])
     aioclient_mock.get(LIST_URL, json=[])
+    aioclient_mock.get(WORK_LOCATION_URL, json={"location": None, "color": None})
 
     await coordinator._async_update_data()
 
